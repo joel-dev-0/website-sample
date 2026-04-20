@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PageTurner — Reviews &amp; Media</title>
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Internal CSS -->
+  <style>
+    .tab-btns { display: flex; gap: 7px; margin-bottom: 18px; flex-wrap: wrap; }
+    .tab-btn  {
+      font-family: Arial, sans-serif;
+      padding: 7px 16px;
+      border: 2px solid #ddd;
+      border-radius: 4px;
+      background-color: #fff;
+      color: #555;
+      font-size: 0.84rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .tab-btn.active,
+    .tab-btn:hover { background-color: #8b0000; color: #fff; border-color: #8b0000; }
+
+    .api-card {
+      background-color: #fff;
+      border-left: 3px solid #c8952a;
+      border-radius: 4px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    }
+    .api-card strong { color: #8b0000; }
+    .api-card span   { color: #777; font-family: Arial, sans-serif; font-size: 0.82rem; }
+  </style>
+</head>
+<body>
+
+<header id="header">
+  <nav class="container">
+    <span class="brand">PageTurner</span>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="reviews.html" class="active">Reviews</a></li>
+      <li><a href="submit.html">Submit Review</a></li>
+    </ul>
+  </nav>
+  <div id="gnav">
+    <a href="index.html"      class="gnav-link"><span class="gi">🏠</span>Home</a>
+    <a href="#reviews-list"   class="gnav-link"><span class="gi">💬</span>Reviews</a>
+    <a href="submit.html"     class="gnav-link"><span class="gi">✍️</span>Submit</a>
+  </div>
+</header>
+
+<div class="hero" style="padding:55px 20px 46px;">
+  <h1>Book <span>Reviews</span></h1>
+  <p>Community reviews, audio excerpts, video trailers, and live book data.</p>
+</div>
+
+<!-- Community Reviews -->
+<section class="section" id="reviews-list">
+  <div class="container">
+    <h2 class="section-title">Community Reviews</h2>
+    <p class="section-subtitle">Real opinions from real readers — filter by genre</p>
+
+    <div class="tab-btns">
+      <button class="tab-btn active" onclick="filterReviews('all', this)">All</button>
+      <button class="tab-btn" onclick="filterReviews('fiction', this)">Fiction</button>
+      <button class="tab-btn" onclick="filterReviews('mystery', this)">Mystery</button>
+      <button class="tab-btn" onclick="filterReviews('fantasy', this)">Fantasy</button>
+      <button class="tab-btn" onclick="filterReviews('science', this)">Science</button>
+    </div>
+
+    <div id="review-list">
+      <div class="review-card" data-genre="fiction">
+        <span class="review-badge">Fiction</span>
+        <div class="reviewer">⭐⭐⭐⭐⭐ by Sarah K. — March 2025</div>
+        <h3>The Shadow Garden — Elena Marchetti</h3>
+        <p>A breathtaking debut. Marchetti's prose reads like a dream you don't want to wake from. The garden itself feels like a living character — mysterious and full of secrets. I devoured it in two sittings.</p>
+        <span class="badge-gold">Editor's Pick</span>
+      </div>
+
+      <div class="review-card" data-genre="fantasy">
+        <span class="review-badge">Fantasy</span>
+        <div class="reviewer">⭐⭐⭐⭐⭐ by Marcus T. — February 2025</div>
+        <h3>The Starless Sea — Erin Morgenstern</h3>
+        <p>If you love stories that feel like being wrapped in a warm blanket on a rainy evening, this is your book. Morgenstern layers myth, fairy tale, and modern narrative into something genuinely unforgettable.</p>
+      </div>
+
+      <div class="review-card" data-genre="mystery">
+        <span class="review-badge">Mystery</span>
+        <div class="reviewer">⭐⭐⭐⭐☆ by Priya D. — January 2025</div>
+        <h3>Midnight Compass — James Harlow</h3>
+        <p>A tight, well-plotted thriller that kept me guessing. The detective protagonist is flawed in all the right ways. The ending felt slightly rushed, but the ride was absolutely worth it.</p>
+      </div>
+
+      <div class="review-card" data-genre="science">
+        <span class="review-badge">Science</span>
+        <div class="reviewer">⭐⭐⭐⭐⭐ by Liam O. — December 2024</div>
+        <h3>Pale Blue Dot — Carl Sagan</h3>
+        <p>Sagan's ability to translate cosmic scale into something profoundly human is unmatched. Reading this felt like standing at the edge of the universe. Essential reading for everyone.</p>
+        <span class="badge-gold">Classic</span>
+      </div>
+    </div>
+
+    <!-- jQuery slideToggle demo -->
+    <div style="margin-top:20px; text-align:center;">
+      <button class="btn btn-gold" id="reveal-btn">✨ Show Favourite Quote</button>
+      <div id="jq-quote">
+        <strong>From The Shadow Garden:</strong><br />
+        "She had learned long ago that secrets, like seeds, eventually find their way into the light."
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">PageTurner</div>
+  <p>
+    <a href="index.html">Home</a> ·
+    <a href="reviews.html">Reviews</a> ·
+    <a href="submit.html">Submit Review</a>
+  </p>
+  <p style="margin-top:7px;">© 2025 PageTurner.</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+/* ============================================================
+   JavaScript — Variables, Control Flow, Functions,
+   JSON.stringify, JSON.parse, Fetch API, Document Object,
+   jQuery — Selectors, DOM, Events, Effects, Validation
+   ============================================================ */
+
+// ── Book library (JSON Array) ──
+var bookLibrary = [
+  { id: 1, title: 'The Shadow Garden',  author: 'Elena Marchetti',  genre: 'Fiction',  rating: 5.0 },
+  { id: 2, title: 'The Starless Sea',   author: 'Erin Morgenstern', genre: 'Fantasy',  rating: 4.9 },
+  { id: 3, title: 'Pale Blue Dot',      author: 'Carl Sagan',       genre: 'Science',  rating: 4.8 }
+];
+
+// ── JSON.stringify ──
+function doStringify() {
+  var title  = document.getElementById('j-title').value  || 'Untitled';
+  var author = document.getElementById('j-author').value || 'Unknown';
+  var rating = parseFloat(document.getElementById('j-rating').value) || 4.0;
+  var obj = { title: title, author: author, rating: rating, reviewed: new Date().toLocaleDateString() };
+  document.getElementById('stringify-out').textContent = JSON.stringify(obj, null, 2);
+}
+
+// ── JSON.parse ──
+function doParse() {
+  try {
+    var parsed = JSON.parse(document.getElementById('j-parse-in').value);
+    var out = '✅ Parsed:\n\n';
+    for (var key in parsed) { out += key + ': ' + parsed[key] + '\n'; }
+    document.getElementById('parse-out').textContent = out;
+  } catch (err) {
+    document.getElementById('parse-out').textContent = '❌ Invalid JSON: ' + err.message;
+  }
+}
+
+// ── Read/Write JSON Array ──
+function readWriteJSON() {
+  var out = 'Library (' + bookLibrary.length + ' books):\n\n';
+  bookLibrary.forEach(function(b) {
+    out += '#' + b.id + ' ' + b.title + ' — ' + b.author + ' (' + b.rating + '★)\n';
+  });
+  document.getElementById('rw-out').textContent = out;
+}
+
+function addToJSON() {
+  var newBook = { id: bookLibrary.length + 1, title: 'Letters to the Lost', author: 'Aimee Novak', genre: 'Romance', rating: 4.5 };
+  bookLibrary.push(newBook);
+  document.getElementById('rw-out').textContent = '✅ Added! Now ' + bookLibrary.length + ' books.\n\nNew: ' + JSON.stringify(newBook, null, 2);
+}
+
+// ── Fetch API ──
+function fetchReviewers() {
+  document.getElementById('fetch-out').textContent = '⏳ Fetching...';
+  document.getElementById('fetch-list').innerHTML = '';
+
+  fetch('https://jsonplaceholder.typicode.com/users')
+    .then(function(res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
+    .then(function(data) {
+      document.getElementById('fetch-out').textContent = '✅ Fetched ' + data.length + ' reviewers:';
+      data.slice(0, 5).forEach(function(u) {
+        var card = document.createElement('div');
+        card.className = 'api-card';
+        card.innerHTML = '<strong>' + u.name + '</strong><br><span>📧 ' + u.email + '</span>';
+        document.getElementById('fetch-list').appendChild(card);
+      });
+    })
+    .catch(function(err) {
+      document.getElementById('fetch-out').textContent = '❌ Error: ' + err.message;
+    });
+}
+
+// ── Filter Reviews ──
+function filterReviews(genre, btn) {
+  document.querySelectorAll('#review-list .review-card').forEach(function(c) {
+    c.style.display = (genre === 'all' || c.dataset.genre === genre) ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+}
+
+/* ── jQuery ── */
+$(document).ready(function() {
+
+  // Reveal quote
+  $('#reveal-btn').click(function() {
+    $('#jq-quote').slideToggle(400);
+    $(this).text($('#jq-quote').is(':visible') ? '✨ Hide Quote' : '✨ Show Favourite Quote');
+  });
+
+  // DOM Manipulation
+  var quotes = [
+    '"A room without books is like a body without a soul." — Cicero',
+    '"There is no friend as loyal as a book." — Hemingway',
+    '"Books are a uniquely portable magic." — Stephen King'
+  ];
+  var qi = 0;
+
+  $('#jq-change').click(function() {
+    qi = (qi + 1) % quotes.length;
+    $('#jq-demo-text').text(quotes[qi]);          // .text() — DOM manipulation
+    $('#jq-log').text('Quote changed with .text()');
+  });
+
+  var bgs = ['#fdf6ec', '#eaf0fb', '#eaf4ee', '#fef9e7'];
+  var bi = 0;
+  $('#jq-color').click(function() {
+    bi = (bi + 1) % bgs.length;
+    $('#jq-demo-box').css('background', bgs[bi]); // .css() — DOM manipulation
+    $('#jq-log').text('Background changed with .css()');
+  });
+
+  // Effects
+  $('#jq-hide').click(function()  { $('#jq-demo-box').hide(400);        $('#jq-log').text('.hide(400) called'); });
+  $('#jq-show').click(function()  { $('#jq-demo-box').show(400);        $('#jq-log').text('.show(400) called'); });
+  $('#jq-toggle').click(function(){ $('#jq-demo-box').toggle(400);      $('#jq-log').text('.toggle(400) called'); });
+
+  $('#eff-fadein').click(function()  { $('#eff-box').show().fadeIn(500);   });
+  $('#eff-fadeout').click(function() { $('#eff-box').fadeOut(500);          });
+  $('#eff-slide').click(function()   { $('#eff-box').slideToggle(400);      });
+  $('#eff-animate').click(function() {
+    $('#eff-box').show().animate({ width: '280px', opacity: 0.6 }, 350)
+                        .animate({ width: '200px', opacity: 1   }, 350);
+  });
+
+  // jQuery validation
+  $('#jq-search-btn').click(function() {
+    var q = $('#jq-search').val().trim();
+    var out = $('#jq-search-result');
+
+    if (q.length < 2) {
+      out.text('❌ Enter at least 2 characters.').css({ background: '#fdecea', color: '#721c24' });
+      return;
+    }
+
+    var found = bookLibrary.filter(function(b) {
+      return b.title.toLowerCase().includes(q.toLowerCase()) ||
+             b.author.toLowerCase().includes(q.toLowerCase());
+    });
+
+    if (found.length > 0) {
+      out.text('✅ Found: "' + found[0].title + '" by ' + found[0].author + ' — ' + found[0].rating + ' ⭐')
+         .css({ background: '#d4edda', color: '#155724' });
+    } else {
+      out.text('📚 No match for "' + q + '" — try: Shadow, Sagan, or Compass')
+         .css({ background: '#fff3cd', color: '#856404' });
+    }
+  });
+
+  // onFocus / onBlur
+  $('#jq-search').focus(function() { $(this).css('border-color', '#8b0000'); });
+  $('#jq-search').blur(function()  { $(this).css('border-color', '#ddd'); });
+
+});
+</script>
+
+</body>
+</html>

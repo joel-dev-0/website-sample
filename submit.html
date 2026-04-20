@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PageTurner — Submit a Review</title>
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Internal CSS -->
+  <style>
+    .step-head {
+      background-color: #8b0000;
+      color: #f0c080;
+      font-family: Arial, sans-serif;
+      font-size: 0.93rem;
+      font-weight: bold;
+      padding: 9px 16px;
+      border-radius: 4px 4px 0 0;
+      margin-bottom: 0;
+      cursor: pointer;
+    }
+    .step-body {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-top: none;
+      border-radius: 0 0 4px 4px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .radio-row { display: flex; gap: 18px; flex-wrap: wrap; }
+    .radio-label { display: flex; align-items: center; gap: 6px; font-family: Arial, sans-serif; font-size: 0.88rem; color: #444; cursor: pointer; }
+    .char-count { font-family: Arial, sans-serif; font-size: 0.76rem; color: #777; margin-top: 3px; }
+    .preview-box { display: none; background-color: #fff; border-left: 5px solid #c8952a; border-radius: 4px; padding: 18px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); margin-top: 18px; }
+    .preview-box h3 { font-size: 1rem; margin-bottom: 3px; }
+    .preview-box .meta { font-family: Arial, sans-serif; font-size: 0.8rem; color: #777; margin-bottom: 7px; }
+  </style>
+</head>
+<body>
+
+<header id="header">
+  <nav class="container">
+    <span class="brand">PageTurner</span>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+      <li><a href="submit.html" class="active">Submit Review</a></li>
+    </ul>
+  </nav>
+  <div id="gnav">
+    <a href="index.html"      class="gnav-link"><span class="gi">🏠</span>Home</a>
+    <a href="#submit-form"    class="gnav-link"><span class="gi">📝</span>Form</a>
+    <a href="reviews.html"    class="gnav-link"><span class="gi">💬</span>Reviews</a>
+  </div>
+</header>
+
+<div class="hero" style="padding:55px 20px 46px;">
+  <h1>Submit Your <span>Review</span></h1>
+  <p>Share your thoughts and help fellow readers discover great books.</p>
+</div>
+
+<!-- ── FORM ── -->
+<section class="section" id="submit-form">
+  <div class="container">
+    <h2 class="section-title">Write a Book Review</h2>
+    <p class="section-subtitle">Fields marked * are required</p>
+
+    <div class="form-wrap">
+
+      <!-- Step 1 -->
+      <div class="step-head">👤 Step 1 — Your Details</div>
+      <div class="step-body">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fname">First Name *</label>
+            <input type="text" id="fname" placeholder="Jane"
+                   onfocus="onFocusField(this)" onblur="onBlurField(this)" />
+            <div class="error-msg" id="err-fname">First name is required.</div>
+          </div>
+          <div class="form-group">
+            <label for="lname">Last Name *</label>
+            <input type="text" id="lname" placeholder="Austen"
+                   onfocus="onFocusField(this)" onblur="onBlurField(this)" />
+            <div class="error-msg" id="err-lname">Last name is required.</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input type="email" id="email" placeholder="jane@example.com"
+                 onfocus="onFocusField(this)" onblur="onBlurField(this)" />
+          <div class="error-msg" id="err-email">Enter a valid email (e.g. name@domain.com).</div>
+        </div>
+
+        <div class="form-group">
+          <label for="pass">Password * <small style="font-weight:normal; color:#777;">(min 6 chars)</small></label>
+          <input type="password" id="pass" placeholder="••••••••" />
+          <div class="error-msg" id="err-pass">Password must be at least 6 characters.</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="age">Age * <small style="font-weight:normal; color:#777;">(13–120)</small></label>
+            <input type="number" id="age" placeholder="25" min="13" max="120" />
+            <div class="error-msg" id="err-age">Enter a valid age (13–120).</div>
+          </div>
+          <div class="form-group">
+            <label for="dob">Date of Birth *</label>
+            <input type="date" id="dob" />
+            <div class="error-msg" id="err-dob">Please select your date of birth.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step-head">📖 Step 2 — Book Information</div>
+      <div class="step-body">
+
+        <div class="form-group">
+          <label for="book-title">Book Title *</label>
+          <input type="text" id="book-title" placeholder="e.g. The Shadow Garden" oninput="livePreview()" />
+          <div class="error-msg" id="err-title">Book title is required.</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="book-author">Author *</label>
+            <input type="text" id="book-author" placeholder="e.g. Elena Marchetti" oninput="livePreview()" />
+            <div class="error-msg" id="err-author">Author name is required.</div>
+          </div>
+          <div class="form-group">
+            <label for="book-genre">Genre</label>
+            <select id="book-genre" onchange="livePreview()">
+              <option value="">— Select —</option>
+              <option>Literary Fiction</option>
+              <option>Mystery &amp; Thriller</option>
+              <option>Science Fiction</option>
+              <option>Fantasy</option>
+              <option>Historical Fiction</option>
+              <option>Romance</option>
+              <option>Biography</option>
+              <option>Science</option>
+              <option>Self-Help</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Star Rating *</label>
+          <div class="radio-row">
+            <label class="radio-label"><input type="radio" name="rating" value="5" onchange="livePreview()" /> ★★★★★ (5)</label>
+            <label class="radio-label"><input type="radio" name="rating" value="4" onchange="livePreview()" /> ★★★★☆ (4)</label>
+            <label class="radio-label"><input type="radio" name="rating" value="3" onchange="livePreview()" /> ★★★☆☆ (3)</label>
+            <label class="radio-label"><input type="radio" name="rating" value="2" onchange="livePreview()" /> ★★☆☆☆ (2)</label>
+            <label class="radio-label"><input type="radio" name="rating" value="1" onchange="livePreview()" /> ★☆☆☆☆ (1)</label>
+          </div>
+          <div class="error-msg" id="err-rating">Please select a star rating.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="review-text">Your Review * <small style="font-weight:normal; color:#777;">(50–600 chars)</small></label>
+          <textarea id="review-text" placeholder="Tell us what you loved or didn't love about this book..."
+                    oninput="updateCharCount(); livePreview()"></textarea>
+          <div class="char-count" id="char-count">0 / 600 characters</div>
+          <div class="error-msg" id="err-review">Review must be 50–600 characters.</div>
+        </div>
+
+        <div class="form-group">
+          <label style="display:flex; align-items:flex-start; gap:7px; font-weight:normal; text-transform:none; letter-spacing:0;">
+            <input type="checkbox" id="recommend" style="margin-top:3px;" />
+            I would recommend this book to other readers
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label style="display:flex; align-items:flex-start; gap:7px; font-weight:normal; text-transform:none; letter-spacing:0;">
+            <input type="checkbox" id="terms" style="margin-top:3px;" />
+            I agree to the <a href="#" onclick="return showTerms()">Terms &amp; Conditions</a> *
+          </label>
+          <div class="error-msg" id="err-terms">You must agree to the terms.</div>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+        <button class="btn btn-gold"
+                onclick="submitReview()"
+                ondblclick="dblClickMsg()">
+          Submit Review ✍️
+        </button>
+        <button class="btn btn-outline" style="color:#555; border-color:#ddd;"
+                onclick="resetForm()">
+          Reset
+        </button>
+        <button class="btn-sm" style="background:#777; color:#fff; margin-left:auto;"
+                onclick="previewToggle()">
+          👁 Preview
+        </button>
+      </div>
+
+      <!-- Live preview -->
+      <div class="preview-box" id="preview-box">
+        <div style="font-family:Arial,sans-serif; font-size:0.68rem; font-weight:bold; text-transform:uppercase; letter-spacing:0.1em; color:#c8952a; margin-bottom:3px;" id="prev-genre">Genre</div>
+        <h3 id="prev-title">Book Title</h3>
+        <div class="meta">by <span id="prev-author">Author</span> — <span id="prev-stars">☆☆☆☆☆</span></div>
+        <p id="prev-review" style="font-size:0.9rem; font-style:italic;">Your review will appear here...</p>
+      </div>
+
+      <div class="success-box" id="success-box">
+        🎉 Thank you, <span id="succ-name"></span>! Your review of <strong><span id="succ-book"></span></strong> was submitted successfully.
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<footer>
+  <div class="footer-brand">PageTurner</div>
+  <p>
+    <a href="index.html">Home</a> ·
+    <a href="reviews.html">Reviews</a> ·
+    <a href="submit.html">Submit Review</a>
+  </p>
+  <p style="margin-top:7px;">© 2025 PageTurner.</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+/* ============================================================
+   JavaScript — Form Validation, Variables, Operators,
+   Control Flow, Functions, Document Object, Events, Popups
+   ============================================================ */
+
+// Helper: show/hide error
+function showErr(id, show, msg) {
+  var el = document.getElementById(id);
+  el.style.display = show ? 'block' : 'none';
+  if (msg) el.textContent = msg;
+}
+
+// ── Form Validation (onsubmit) ──
+function submitReview() {
+  var valid = true;
+
+  // 1. Required — First Name
+  var fname = document.getElementById('fname').value.trim();
+  showErr('err-fname', fname === '', 'First name is required.');
+  if (fname === '') valid = false;
+
+  // 2. Required — Last Name
+  var lname = document.getElementById('lname').value.trim();
+  showErr('err-lname', lname === '', 'Last name is required.');
+  if (lname === '') valid = false;
+
+  // 3. Email Validation
+  var email = document.getElementById('email').value.trim();
+  var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  showErr('err-email', !emailOk, 'Enter a valid email (e.g. name@domain.com).');
+  if (!emailOk) valid = false;
+
+  // 4. Password Validation
+  var pass = document.getElementById('pass').value;
+  showErr('err-pass', pass.length < 6, 'Password must be at least 6 characters.');
+  if (pass.length < 6) valid = false;
+
+  // 5. Number Validation — Age
+  var age = parseInt(document.getElementById('age').value);
+  var ageOk = !isNaN(age) && age >= 13 && age <= 120;
+  showErr('err-age', !ageOk, 'Enter a valid age between 13 and 120.');
+  if (!ageOk) valid = false;
+
+  // 6. Date Validation
+  var dob = document.getElementById('dob').value;
+  showErr('err-dob', !dob, 'Please select your date of birth.');
+  if (!dob) valid = false;
+
+  // 7. Required — Book Title
+  var title = document.getElementById('book-title').value.trim();
+  showErr('err-title', !title, 'Book title is required.');
+  if (!title) valid = false;
+
+  // 8. Required — Author
+  var author = document.getElementById('book-author').value.trim();
+  showErr('err-author', !author, 'Author name is required.');
+  if (!author) valid = false;
+
+  // 9. Radio — Rating
+  var rating = document.querySelector('input[name="rating"]:checked');
+  showErr('err-rating', !rating, 'Please select a star rating.');
+  if (!rating) valid = false;
+
+  // 10. Review length
+  var rev = document.getElementById('review-text').value.trim();
+  var revOk = rev.length >= 50 && rev.length <= 600;
+  showErr('err-review', !revOk, 'Review must be 50–600 characters (currently: ' + rev.length + ').');
+  if (!revOk) valid = false;
+
+  // 11. Checkbox — Terms
+  var terms = document.getElementById('terms').checked;
+  showErr('err-terms', !terms, 'You must agree to the terms & conditions.');
+  if (!terms) valid = false;
+
+  // onSubmit event log
+  document.getElementById('submit-log').textContent =
+    'onSubmit fired! Valid: ' + valid + ' at ' + new Date().toLocaleTimeString();
+
+  if (valid) {
+    // JSON.stringify the submission data
+    var submission = {
+      reviewer: fname + ' ' + lname,
+      email:    email,
+      book:     title,
+      author:   author,
+      genre:    document.getElementById('book-genre').value || 'Uncategorised',
+      rating:   parseInt(rating.value),
+      review:   rev,
+      recommended: document.getElementById('recommend').checked,
+      submitted: new Date().toISOString()
+    };
+    console.log('Submission:', JSON.stringify(submission, null, 2));
+
+    document.getElementById('succ-name').textContent = fname;
+    document.getElementById('succ-book').textContent = title;
+    var sb = document.getElementById('success-box');
+    sb.style.display = 'block';
+    sb.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+// Reset form
+function resetForm() {
+  if (!confirm('Clear the form? All data will be lost.')) return;  // jumping statement
+  document.querySelectorAll('input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="date"], textarea, select')
+    .forEach(function(el) { el.value = ''; });
+  document.querySelectorAll('input[type="radio"], input[type="checkbox"]')
+    .forEach(function(el) { el.checked = false; });
+  document.querySelectorAll('.error-msg')
+    .forEach(function(el) { el.style.display = 'none'; });
+  document.getElementById('success-box').style.display = 'none';
+  document.getElementById('preview-box').style.display = 'none';
+  document.getElementById('char-count').textContent = '0 / 600 characters';
+}
+
+// Double click on submit
+function dblClickMsg() {
+  alert('⚡ onDblClick detected!\nYour review was submitted only once.');
+}
+
+// Terms alert
+function showTerms() {
+  alert('Terms & Conditions\n\n1. Reviews must be your own.\n2. No fake or plagiarised reviews.\n3. Be respectful and constructive.\n\nThank you!');
+  return false;
+}
+
+// Character counter
+function updateCharCount() {
+  var len = document.getElementById('review-text').value.length;
+  var el  = document.getElementById('char-count');
+  el.textContent = len + ' / 600 characters';
+  el.style.color = (len < 50 || len > 600) ? '#c0392b' : '#777';
+}
+
+// Live preview using document object
+function livePreview() {
+  var title  = document.getElementById('book-title').value  || 'Book Title';
+  var author = document.getElementById('book-author').value || 'Author';
+  var genre  = document.getElementById('book-genre').value  || 'Genre';
+  var rev    = document.getElementById('review-text').value || 'Your review will appear here...';
+  var rEl    = document.querySelector('input[name="rating"]:checked');
+  var stars  = rEl ? '★'.repeat(parseInt(rEl.value)) : '☆☆☆☆☆';
+
+  document.getElementById('prev-title').textContent  = title;
+  document.getElementById('prev-author').textContent = author;
+  document.getElementById('prev-genre').textContent  = genre;
+  document.getElementById('prev-stars').textContent  = stars;
+  document.getElementById('prev-review').textContent = rev.substring(0, 160) + (rev.length > 160 ? '...' : '');
+}
+
+function previewToggle() {
+  livePreview();
+  var box = document.getElementById('preview-box');
+  box.style.display = box.style.display === 'block' ? 'none' : 'block';
+}
+
+// ── Event Handlers ──
+function onFocusField(el) {
+  el.style.borderColor = '#8b0000';
+}
+function onBlurField(el) {
+  el.style.borderColor = '#ddd';
+}
+function logEvt(msg) {
+  document.getElementById('evt-log').textContent = msg;
+}
+function focusEvt(el, isFocus) {
+  el.style.borderColor = isFocus ? '#8b0000' : '#ddd';
+  document.getElementById('focus-log').textContent =
+    isFocus ? 'onFocus: Field is active 🎯' : 'onBlur: Field lost focus 👋';
+}
+
+// ── Variables & Operators ──
+function calcReading() {
+  // Variables
+  var pages = parseInt(document.getElementById('pages').value);
+  var hours = parseFloat(document.getElementById('hours').value);
+  var out;
+
+  if (isNaN(pages) || isNaN(hours) || pages <= 0 || hours <= 0) {
+    out = 'Please enter valid positive numbers.';
+  } else {
+    var speed  = Math.round(pages / hours);           // Division
+    var words  = pages * 280;                         // Multiplication
+    var time500 = (500 / speed).toFixed(1);           // Division + toFixed
+
+    out = 'Speed: ' + speed + ' pages/hour\n' +
+          'Est. words read: ~' + words.toLocaleString() + '\n' +
+          'A 500-page book would take ~' + time500 + ' hours';
+  }
+  document.getElementById('calc-result').textContent = out;
+}
+
+// ── Control Flow — if / else if / else + for loop ──
+function recommendGenre() {
+  var mood = parseInt(document.getElementById('mood').value);
+  var out;
+
+  if (isNaN(mood) || mood < 1 || mood > 10) {
+    out = 'Enter a number between 1 and 10.';
+  } else if (mood <= 3) {
+    out = 'Mood ' + mood + '/10 — Try: Self-Help or Inspirational memoir.';
+  } else if (mood <= 6) {
+    out = 'Mood ' + mood + '/10 — Try: Light Mystery or Romance.';
+  } else if (mood <= 8) {
+    out = 'Mood ' + mood + '/10 — Try: Literary Fiction or Historical.';
+  } else {
+    out = 'Mood ' + mood + '/10 — Try: Science Fiction or Fantasy!';
+  }
+
+  // for loop
+  var genres = ['Fiction', 'Mystery', 'Fantasy', 'Science', 'Romance'];
+  out += '\n\nAll genres:\n';
+  for (var i = 0; i < genres.length; i++) {
+    out += (i + 1) + '. ' + genres[i] + '\n';
+  }
+  document.getElementById('mood-result').textContent = out;
+}
+
+// ── Function with arguments & return statement ──
+function calcReadingTime(pages, speed) {
+  if (pages <= 0 || speed <= 0) return null;   // return + jumping
+  var hours = pages / speed;
+  return {
+    hrs:  Math.floor(hours),
+    mins: Math.round((hours % 1) * 60),
+    total: hours.toFixed(1)
+  };
+}
+
+function callReadingTime() {
+  var pages = parseInt(document.getElementById('fn-pages').value);
+  var speed = parseInt(document.getElementById('fn-speed').value);
+  var res   = calcReadingTime(pages, speed);  // calling function
+  var out;
+
+  if (!res) {
+    out = 'Please enter valid positive numbers.';
+  } else {
+    out = 'To read ' + pages + ' pages at ' + speed + ' pages/hr:\n' +
+          'Time: ' + res.hrs + ' hrs ' + res.mins + ' mins (~' + res.total + ' hrs)\n\n' +
+          (res.total < 5 ? '🎉 A quick read!' : res.total < 12 ? '📖 A medium read.' : '🗓 A long read — savour it!');
+  }
+  document.getElementById('fn-result').textContent = out;
+}
+
+// ── Document Object ──
+function domSet() {
+  var txt = document.getElementById('dom-input').value;
+  document.getElementById('dom-display').textContent = txt || '(empty input)';
+}
+function domStyle() {
+  var colours = ['#8b0000', '#5a0000', '#3d2b1f', '#1a3c2a'];
+  var rand = colours[Math.floor(Math.random() * colours.length)];
+  document.getElementById('dom-output').style.backgroundColor = rand;
+  document.getElementById('dom-display').style.color = '#fff';
+}
+function domClear() {
+  document.getElementById('dom-display').textContent = 'Output here (position: relative)';
+  document.getElementById('dom-output').style.backgroundColor = '';
+  document.getElementById('dom-display').style.color = '';
+  document.getElementById('dom-input').value = '';
+}
+
+// ── Popup Boxes ──
+function doAlert() {
+  alert('📚 Welcome to PageTurner!\nThank you for sharing your love of books.');
+  document.getElementById('alert-log').textContent = 'Alert was shown and dismissed.';
+}
+function doConfirm() {
+  var ans = confirm('Would you recommend PageTurner to a friend?');
+  document.getElementById('confirm-log').textContent =
+    'Confirm: ' + (ans ? '✅ true — OK clicked' : '❌ false — Cancel clicked');
+}
+function doPrompt() {
+  var fav = prompt("What's your all-time favourite book?", 'e.g. To Kill a Mockingbird');
+  document.getElementById('prompt-log').textContent =
+    fav !== null ? '📖 Favourite: "' + fav + '"' : 'Cancelled — result: null';
+}
+
+/* ── jQuery ── */
+$(document).ready(function() {
+
+  // Step headers collapse/expand (slideToggle)
+  $('.step-head').click(function() {
+    $(this).next('.step-body').slideToggle(300);
+  });
+
+  // onFocus/onBlur on textarea via jQuery
+  $('#review-text').focus(function() {
+    $(this).css('border-color', '#8b0000');
+  }).blur(function() {
+    $(this).css('border-color', '#ddd');
+  });
+
+});
+</script>
+
+</body>
+</html>
